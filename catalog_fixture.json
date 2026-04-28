@@ -1,0 +1,352 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 4,
+    "fields": {
+        "name": "Дом и сад",
+        "description": "Товары для дома, дачи и сада"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 5,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 6,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 7,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 8,
+    "fields": {
+        "name": "Дом и сад",
+        "description": "Товары для дома, дачи и сада"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 9,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 10,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 11,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 12,
+    "fields": {
+        "name": "Дом и сад",
+        "description": "Товары для дома, дачи и сада"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 13,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 14,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 15,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 16,
+    "fields": {
+        "name": "Дом и сад",
+        "description": "Товары для дома, дачи и сада"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 17,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 18,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 19,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 20,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 21,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 22,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 23,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 24,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 25,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 26,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 27,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 28,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 29,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 30,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 31,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 32,
+    "fields": {
+        "name": "Электроника",
+        "description": "Смартфоны, ноутбуки, планшеты и другая электроника"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 33,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская и детская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 34,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники, техническая литература"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "iPhone 15 Pro",
+        "description": "Смартфон Apple с процессором A17 Pro",
+        "image": "",
+        "category": 29,
+        "price": "99900.00",
+        "created_at": "2026-04-28T17:11:20.477Z",
+        "updated_at": "2026-04-28T17:11:20.477Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "Samsung Galaxy S24",
+        "description": "Флагманский смартфон Samsung",
+        "image": "",
+        "category": 29,
+        "price": "89900.00",
+        "created_at": "2026-04-28T17:11:20.524Z",
+        "updated_at": "2026-04-28T17:11:20.524Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "name": "Джинсы Levi's 501",
+        "description": "Классические джинсы прямого кроя",
+        "image": "",
+        "category": 30,
+        "price": "7990.00",
+        "created_at": "2026-04-28T17:11:20.525Z",
+        "updated_at": "2026-04-28T17:11:20.525Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+        "name": "iPhone 15 Pro",
+        "description": "Смартфон Apple с процессором A17 Pro",
+        "image": "",
+        "category": 32,
+        "price": "99900.00",
+        "created_at": "2026-04-28T18:08:09.253Z",
+        "updated_at": "2026-04-28T18:08:09.253Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+        "name": "Samsung Galaxy S24",
+        "description": "Флагманский смартфон Samsung",
+        "image": "",
+        "category": 32,
+        "price": "89900.00",
+        "created_at": "2026-04-28T18:08:09.292Z",
+        "updated_at": "2026-04-28T18:08:09.292Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+        "name": "Джинсы Levi's 501",
+        "description": "Классические джинсы прямого кроя",
+        "image": "",
+        "category": 33,
+        "price": "7990.00",
+        "created_at": "2026-04-28T18:08:09.293Z",
+        "updated_at": "2026-04-28T18:08:09.293Z"
+    }
+}
+]
