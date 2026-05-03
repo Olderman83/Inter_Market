@@ -3,10 +3,10 @@ from .models import Category, Product
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'created_at']
-    list_display_links = ['name']
-    search_fields = ['name']
-    readonly_fields = ['created_at', 'updated_at']
+    list_display = ['id', 'name']
+    list_display_links = ['name',]
+    search_fields = ['name',]
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
