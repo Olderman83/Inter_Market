@@ -1,42 +1,63 @@
 from django.shortcuts import render
 from django.contrib import messages
-from django.http import HttpRequest, HttpResponse
+from .models import Product, Category, Contact
+from django.shortcuts import render, get_object_or_404
 
+def home(request):
+    """Контроллер для домашней страницы с последними 5 продуктами"""
+    # Получаем последние 5 созданных продуктов
+    last_products = Product.objects.all()[:5]
 
-def home(request: HttpRequest) -> HttpResponse:
-    """
-    Контроллер для отображения домашней страницы
-    """
+    # Выводим в консоль
+    print("Последние 5 продуктов:")
+    for product in last_products:
+        print(f"- {product.name} (${product.price}) - {product.created_at}")
+
     context = {
-        "title": "Главная страница",
+        'products': last_products,
+        'title': 'Главная - Skystore'
     }
-    return render(request, "catalog/home.html", context)
+    return render(request, 'catalog/home.html', context)
+
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, 'catalog/product_detail.html', {'product': product})
 
 
-def contacts(request: HttpRequest) -> HttpResponse:
-    """
-    Контроллер для отображения страницы с контактной информацией
-    и обработки формы обратной связи
-    """
-    if request.method == "POST":
+def contacts(request):
+    """Контроллер для страницы контактов с формой обратной связи"""
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message')
+
+        # Здесь можно добавить отправку email или сохранение в БД
+        print(f"Получено сообщение от {name} ({phone}): {message}")
+
+        messages.success(request, 'Спасибо! Ваше сообщение отправлено.')
+
+    return render(request, 'catalog/contacts.html')
+
+
+def add_product(request):
+    """Добавление нового товара"""
+    if request.method == 'POST':
         # Получаем данные из формы
-        name = request.POST.get("name", "")
-        email = request.POST.get("email", "")
-        message = request.POST.get("message", "")
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        category_id = request.POST.get('category')
 
-        # Здесь можно добавить логику отправки email или сохранения в базу данных
-        # Например, просто выводим в консоль для демонстрации
-        print(f"Получено сообщение от {name} ({email}): {message}")
-
-        # Добавляем сообщение об успешной отправке
-        messages.success(
-            request,
-            "Ваше сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.",
+        # Создаем новый продукт
+        product = Product.objects.create(
+            name=name,
+            description=description,
+            price=price,
+            category_id=category_id
         )
 
-        # Остаемся на той же странице (GET запрос после POST)
-        # Возвращаем пустую форму после успешной отправки
-        return render(request, "catalog/contacts.html")
+        messages.success(request, f'Товар "{product.name}" успешно добавлен!')
+        return redirect('catalog:product_detail', pk=product.pk)
 
-    # GET запрос - просто показываем форму
-    return render(request, "catalog/contacts.html")
+    categories = Category.objects.all()
+    return render(request, 'catalog/add_product.html', {'categories': categories})
