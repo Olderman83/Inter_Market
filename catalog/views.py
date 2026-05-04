@@ -1,10 +1,7 @@
 from django.shortcuts import render
 from django.contrib import messages
-
-from django.shortcuts import render
-from django.contrib import messages
-from .models import Product
-
+from .models import Product, Category, Contact
+from django.shortcuts import render, get_object_or_404
 
 def home(request):
     """Контроллер для домашней страницы с последними 5 продуктами"""
@@ -22,6 +19,10 @@ def home(request):
     }
     return render(request, 'catalog/home.html', context)
 
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, 'catalog/product_detail.html', {'product': product})
+
 
 def contacts(request):
     """Контроллер для страницы контактов с формой обратной связи"""
@@ -36,3 +37,27 @@ def contacts(request):
         messages.success(request, 'Спасибо! Ваше сообщение отправлено.')
 
     return render(request, 'catalog/contacts.html')
+
+
+def add_product(request):
+    """Добавление нового товара"""
+    if request.method == 'POST':
+        # Получаем данные из формы
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        category_id = request.POST.get('category')
+
+        # Создаем новый продукт
+        product = Product.objects.create(
+            name=name,
+            description=description,
+            price=price,
+            category_id=category_id
+        )
+
+        messages.success(request, f'Товар "{product.name}" успешно добавлен!')
+        return redirect('catalog:product_detail', pk=product.pk)
+
+    categories = Category.objects.all()
+    return render(request, 'catalog/add_product.html', {'categories': categories})
