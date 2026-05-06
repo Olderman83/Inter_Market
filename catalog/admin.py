@@ -32,4 +32,6 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
     list_display = ['name', 'phone', 'created_at']
+    list_filter = ['created_at']
     search_fields = ['name', 'phone']
+    readonly_fields = ['created_at']

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 # Create your models here.
 # наименование,описание,изображение,категория,цена за покупку,дата создания,дата последнего изменения.
@@ -54,6 +54,12 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_short_description(self, length=100):
+        """Возвращает краткое описание товара"""
+        if len(self.description) > length:
+            return self.description[:length] + '...'
+        return self.description
 
 class Contact(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя')
