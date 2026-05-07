@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "catalog"
+    'catalog',
+    'blog'
 ]
 
 MIDDLEWARE = [
@@ -121,3 +122,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # или ваш SMTP сервер
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@gmail.com'  # замените на ваш email
+EMAIL_HOST_PASSWORD = 'your-app-password'  # замените на пароль
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
