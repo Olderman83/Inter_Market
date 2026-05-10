@@ -131,3 +131,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'your-email@gmail.com'  # замените на ваш email
 EMAIL_HOST_PASSWORD = 'your-app-password'  # замените на пароль
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+load_dotenv()
