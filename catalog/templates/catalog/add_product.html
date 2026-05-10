@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Добавление товара{% endblock %}
+{% block title %}{% if is_update %}Редактирование{% else %}Добавление{% endif %} товара{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
@@ -8,44 +8,66 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">Добавить новый товар</h3>
+                    <h3 class="mb-0">
+                        {% if is_update %}
+                            Редактирование товара
+                        {% else %}
+                            Добавление нового товара
+                        {% endif %}
+                    </h3>
                 </div>
                 <div class="card-body">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        
+
+                        {% for field in form %}
                         <div class="mb-3">
-                            <label for="name" class="form-label">Название товара *</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+
+                            {% if field.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in field.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Описание *</label>
-                            <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                        {% endfor %}
+
+                        <div class="alert alert-info">
+                            <small>
+                                <strong>Примечание:</strong>
+                                <ul class="mb-0">
+                                    <li>Запрещенные слова в названии и описании: казино, криптовалюта, крипта, биржа, дешево, бесплатно, обман, полиция, радар</li>
+                                    <li>Цена не может быть отрицательной</li>
+                                    <li>Изображения не более 5 МБ в формате JPEG или PNG</li>
+                                </ul>
+                            </small>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Цена *</label>
-                            <input type="number" step="0.01" class="form-control" id="price" name="price" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="category" class="form-label">Категория *</label>
-                            <select class="form-select" id="category" name="category" required>
-                                <option value="">Выберите категорию</option>
-                                {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="image" class="form-label">Изображение</label>
-                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                        </div>
-                        
+
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Добавить товар</button>
+                            <button type="submit" class="btn btn-primary">
+                                {% if is_update %}Сохранить изменения{% else %}Добавить товар{% endif %}
+                            </button>
                             <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">Отмена</a>
                         </div>
                     </form>

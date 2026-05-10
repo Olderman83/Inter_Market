@@ -7,6 +7,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product, Category, Contact
+from .forms import ProductForm
 
 
 class HomeListView(ListView):
@@ -70,7 +71,7 @@ class ProductCreateView(CreateView):
     """Контроллер для добавления нового товара"""
     model = Product
     template_name = 'catalog/add_product.html'
-    fields = ['name', 'description', 'price', 'category', 'image']
+    form_class = ProductForm
     success_url = reverse_lazy('catalog:home')
 
     def form_valid(self, form):
@@ -79,7 +80,9 @@ class ProductCreateView(CreateView):
         return response
 
     def form_invalid(self, form):
-        messages.error(self.request, 'Пожалуйста, исправьте ошибки в форме.')
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'Ошибка в поле "{field}": {error}')
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -92,7 +95,7 @@ class ProductUpdateView(UpdateView):
     """Контроллер для редактирования товара"""
     model = Product
     template_name = 'catalog/add_product.html'
-    fields = ['name', 'description', 'price', 'category', 'image']
+    form_class = ProductForm
 
     def get_success_url(self):
         return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
@@ -101,6 +104,13 @@ class ProductUpdateView(UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, f'Товар "{form.instance.name}" успешно обновлен!')
         return response
+
+    def form_invalid(self, form):
+        # Выводим все ошибки формы
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'Ошибка в поле "{field}": {error}')
+        return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
