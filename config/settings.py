@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog',
-    'blog'
+    'blog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,5 @@ EMAIL_HOST_PASSWORD = 'your-app-password'  # замените на пароль
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 load_dotenv()
+
+AUTH_USER_MODEL = 'users.User'

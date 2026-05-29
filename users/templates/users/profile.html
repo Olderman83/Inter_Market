@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Мой профиль{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Информация</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="{{ user.email }}" 
+                             class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                             style="width: 150px; height: 150px;">
+                            <span class="text-white display-4">{{ user.email|first|upper }}</span>
+                        </div>
+                    {% endif %}
+                    
+                    <h5>{{ user.get_full_name|default:user.email }}</h5>
+                    <p class="text-muted">{{ user.email }}</p>
+                    
+                    <hr>
+                    
+                    <p><strong>Дата регистрации:</strong><br>{{ user.date_joined|date:"d.m.Y" }}</p>
+                    {% if user_products_count %}
+                        <p><strong>Товаров добавлено:</strong><br>{{ user_products_count }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Редактирование профиля</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            
+                            {% if field.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in field.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                            <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">Вернуться на главную</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
