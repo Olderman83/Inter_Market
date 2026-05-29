@@ -73,6 +73,7 @@ class ProductCreateView(CreateView):
     template_name = 'catalog/add_product.html'
     form_class = ProductForm
     success_url = reverse_lazy('catalog:home')
+    login_url = 'users:login'
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -96,6 +97,7 @@ class ProductUpdateView(UpdateView):
     model = Product
     template_name = 'catalog/add_product.html'
     form_class = ProductForm
+    login_url = 'users:login'
 
     def get_success_url(self):
         return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
@@ -124,6 +126,7 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')
+    login_url = 'users:login'
 
     def delete(self, request, *args, **kwargs):
         product = self.get_object()
