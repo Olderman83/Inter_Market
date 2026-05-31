@@ -154,3 +154,25 @@ class ProductForm(forms.ModelForm):
             pass
 
         return image
+
+
+class ProductModerationForm(forms.ModelForm):
+    """Форма для модерации продукта (только для модераторов)"""
+
+    class Meta:
+        model = Product
+        fields = ['publication_status', 'category']
+        widgets = {
+            'publication_status': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'category': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            if hasattr(field.widget, 'attrs'):
+                field.widget.attrs['class'] = 'form-control'

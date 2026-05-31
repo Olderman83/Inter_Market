@@ -1,13 +1,45 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
+
+
+class UserManager(BaseUserManager):
+    """Кастомный менеджер пользователей с авторизацией по email"""
+
+    def create_user(self, email, password=None, **extra_fields):
+        """
+        Создание обычного пользователя
+        """
+        if not email:
+            raise ValueError('Email адрес обязателен')
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        """
+        Создание суперпользователя
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Суперпользователь должен иметь is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Суперпользователь должен иметь is_superuser=True.')
+
+        return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractUser):
     """
     Кастомная модель пользователя с авторизацией по email
     """
-    # Убираем поле username, так как авторизация будет по email
+    # Убираем поле username
     username = None
 
     # Поле для авторизации - email
@@ -54,8 +86,11 @@ class User(AbstractUser):
     )
 
     # Настройки для аутентификации
-    USERNAME_FIELD = 'email'  # Поле для входа
-    REQUIRED_FIELDS = []  # Обязательные поля (кроме email и password)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    # Используем кастомный менеджер
+    objects = UserManager()
 
     class Meta:
         verbose_name = 'Пользователь'

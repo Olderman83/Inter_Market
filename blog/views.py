@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import BlogPost
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class BlogListView(ListView):
@@ -63,7 +64,7 @@ class BlogDetailView(DetailView):
             print(f"Ошибка отправки письма: {e}")
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(LoginRequiredMixin,CreateView):
     """Создание новой статьи"""
     model = BlogPost
     template_name = 'blog/blog_form.html'
@@ -79,7 +80,7 @@ class BlogCreateView(CreateView):
         return reverse('blog:post_detail', kwargs={'pk': self.object.pk})
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(LoginRequiredMixin,UpdateView):
     """Редактирование статьи"""
     model = BlogPost
     template_name = 'blog/blog_form.html'

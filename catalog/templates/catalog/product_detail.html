@@ -11,6 +11,19 @@
         </ol>
     </nav>
     
+    <!-- Статус продукта -->
+    <div class="mb-3">
+        {% if product.publication_status == 'published' %}
+            <span class="badge bg-success">Опубликован</span>
+        {% elif product.publication_status == 'moderation' %}
+            <span class="badge bg-warning">На модерации</span>
+        {% elif product.publication_status == 'rejected' %}
+            <span class="badge bg-danger">Отклонен</span>
+        {% else %}
+            <span class="badge bg-secondary">Черновик</span>
+        {% endif %}
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             {% if product.image %}
@@ -25,17 +38,32 @@
             <h1>{{ product.name }}</h1>
             <p class="text-muted">Категория: {{ product.category.name }}</p>
             <h3 class="text-primary mb-4">{{ product.price }} ₽</h3>
+
+            {% if product.owner %}
+            <p class="text-muted small">Продавец: {{ product.owner.get_full_name|default:product.owner.email }}</p>
+            {% endif %}
+
             <div class="mb-4">
                 <h5>Описание:</h5>
                 <p>{{ product.description|linebreaks }}</p>
             </div>
+
             <div class="mb-4">
                 <small class="text-muted">
                     Добавлен: {{ product.created_at|date:"d.m.Y H:i" }}<br>
                     Обновлен: {{ product.updated_at|date:"d.m.Y H:i" }}
                 </small>
             </div>
-            <button class="btn btn-success btn-lg">Купить сейчас</button>
+
+            <!-- Кнопки для владельца/модератора -->
+            {% if product.can_user_edit request.user %}
+            <div class="btn-group">
+                <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-warning">Редактировать</a>
+                <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+            </div>
+            {% endif %}
+
+            <button class="btn btn-success btn-lg ms-2">Купить сейчас</button>
             <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary btn-lg">Продолжить покупки</a>
         </div>
     </div>
