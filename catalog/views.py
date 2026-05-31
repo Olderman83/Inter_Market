@@ -38,6 +38,17 @@ class ProductDetailView(DetailView):
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
+    def get_queryset(self):
+        """Показываем опубликованные продукты всем, а свои - владельцу"""
+        qs = super().get_queryset()
+        if self.request.user.is_authenticated:
+            # Авторизованные видят свои продукты в любом статусе
+            return qs.filter(
+                models.Q(publication_status=Product.PublicationStatus.PUBLISHED) |
+                models.Q(owner=self.request.user)
+            )
+        return qs.filter(publication_status=Product.PublicationStatus.PUBLISHED)
+
 
 class ContactsView(TemplateView):
     """Контроллер для страницы контактов"""
@@ -65,8 +76,8 @@ class ContactsView(TemplateView):
         return redirect('catalog:contacts')
 
 
-class ProductCreateView(LoginRequiredMixin,CreateView):
-    """Контроллер для добавления нового товара"""
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    """Контроллер для добавления нового товара (только для авторизованных)"""
     model = Product
     template_name = 'catalog/add_product.html'
     form_class = ProductForm
@@ -74,8 +85,14 @@ class ProductCreateView(LoginRequiredMixin,CreateView):
     login_url = 'users:login'
 
     def form_valid(self, form):
+        """Автоматически привязываем продукт к текущему пользователю"""
+        form.instance.owner = self.request.user
+        form.instance.publication_status = Product.PublicationStatus.MODERATION
         response = super().form_valid(form)
-        messages.success(self.request, f'Товар "{form.instance.name}" успешно добавлен!')
+        messages.success(
+            self.request,
+            f'Товар "{form.instance.name}" отправлен на модерацию!'
+        )
         return response
 
     def form_invalid(self, form):
@@ -84,18 +101,30 @@ class ProductCreateView(LoginRequiredMixin,CreateView):
                 messages.error(self.request, f'Ошибка в поле "{field}": {error}')
         return super().form_invalid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
-        return context
 
-
-class ProductUpdateView(LoginRequiredMixin,UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """Контроллер для редактирования товара"""
     model = Product
     template_name = 'catalog/add_product.html'
     form_class = ProductForm
     login_url = 'users:login'
+
+    def test_func(self):
+        """Проверка прав: модератор или владелец"""
+        product = self.get_object()
+        return (self.request.user.has_perm('catalog.can_moderate_product') or
+                product.owner == self.request.user)
+
+    def handle_no_permission(self):
+        """Обработка отсутствия прав"""
+        messages.error(self.request, "У вас нет прав на редактирование этого товара")
+        return redirect('catalog:home')
+
+    def get_form_class(self):
+        """Модераторы используют специальную форму"""
+        if self.request.user.has_perm('catalog.can_moderate_product'):
+            return ProductModerationForm
+        return ProductForm
 
     def get_success_url(self):
         return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
@@ -106,30 +135,58 @@ class ProductUpdateView(LoginRequiredMixin,UpdateView):
         return response
 
     def form_invalid(self, form):
-        # Выводим все ошибки формы
         for field, errors in form.errors.items():
             for error in errors:
                 messages.error(self.request, f'Ошибка в поле "{field}": {error}')
         return super().form_invalid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
-        context['is_update'] = True
-        return context
 
-
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """Контроллер для удаления товара"""
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')
     login_url = 'users:login'
 
+    def test_func(self):
+        """Проверка прав: модератор или владелец"""
+        product = self.get_object()
+        return (self.request.user.has_perm('catalog.can_moderate_product') or
+                product.owner == self.request.user)
+
+    def handle_no_permission(self):
+        """Обработка отсутствия прав"""
+        messages.error(self.request, "У вас нет прав на удаление этого товара")
+        return redirect('catalog:home')
+
     def delete(self, request, *args, **kwargs):
         product = self.get_object()
         messages.success(request, f'Товар "{product.name}" успешно удален!')
         return super().delete(request, *args, **kwargs)
+
+
+class ContactsView(TemplateView):
+    """Контроллер для страницы контактов"""
+    template_name = 'catalog/contacts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contacts'] = Contact.objects.all().order_by('-created_at')[:5]
+        return context
+
+    def post(self, request, *args, **kwargs):
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message')
+
+        Contact.objects.create(
+            name=name,
+            phone=phone,
+            message=message
+        )
+
+        messages.success(request, 'Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.')
+        return redirect('catalog:contacts')
 
 
 class ModerationQueueView(LoginRequiredMixin, UserPassesTestMixin, ListView):
