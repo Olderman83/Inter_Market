@@ -1,13 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.core.mail import send_mail
-from django.conf import settings
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy, reverse
-from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product, Category, Contact
-from .forms import ProductForm
+from .forms import ProductForm, ProductModerationForm
 
 
 class HomeListView(ListView):
@@ -67,7 +65,7 @@ class ContactsView(TemplateView):
         return redirect('catalog:contacts')
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin,CreateView):
     """Контроллер для добавления нового товара"""
     model = Product
     template_name = 'catalog/add_product.html'
@@ -92,7 +90,7 @@ class ProductCreateView(CreateView):
         return context
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin,UpdateView):
     """Контроллер для редактирования товара"""
     model = Product
     template_name = 'catalog/add_product.html'
@@ -132,3 +130,19 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
         product = self.get_object()
         messages.success(request, f'Товар "{product.name}" успешно удален!')
         return super().delete(request, *args, **kwargs)
+
+
+class ModerationQueueView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    """Список продуктов на модерации (только для модераторов)"""
+    model = Product
+    template_name = 'catalog/moderation_queue.html'
+    context_object_name = 'products'
+    paginate_by = 20
+
+    def test_func(self):
+        return self.request.user.has_perm('catalog.can_moderate_product')
+
+    def get_queryset(self):
+        return Product.objects.filter(
+            publication_status=Product.PublicationStatus.MODERATION
+        ).select_related('category', 'owner')
