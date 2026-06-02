@@ -6,6 +6,10 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy, reverse
 from .models import Product, Category, Contact
 from .forms import ProductForm, ProductModerationForm
+from .services import ProductService
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class HomeListView(ListView):
@@ -48,32 +52,6 @@ class ProductDetailView(DetailView):
                 models.Q(owner=self.request.user)
             )
         return qs.filter(publication_status=Product.PublicationStatus.PUBLISHED)
-
-
-class ContactsView(TemplateView):
-    """Контроллер для страницы контактов"""
-    template_name = 'catalog/contacts.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Получаем контакты из БД для отображения
-        context['contacts'] = Contact.objects.all().order_by('-created_at')[:5]
-        return context
-
-    def post(self, request, *args, **kwargs):
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        message = request.POST.get('message')
-
-        # Сохраняем в БД
-        Contact.objects.create(
-            name=name,
-            phone=phone,
-            message=message
-        )
-
-        messages.success(request, 'Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.')
-        return redirect('catalog:contacts')
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -203,3 +181,33 @@ class ModerationQueueView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return Product.objects.filter(
             publication_status=Product.PublicationStatus.MODERATION
         ).select_related('category', 'owner')
+
+
+class CategoryProductsView(ListView):
+    """
+    Отдельное представление для отображения продуктов в категории.
+
+    """
+    template_name = 'catalog/category_products.html'
+    context_object_name = 'products'
+    paginate_by = 9
+
+    def get_queryset(self):
+        """Используем сервисную функцию для получения продуктов по категории"""
+        category_id = self.kwargs.get('category_id')
+        return ProductService.get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs.get('category_id')
+
+        # Получаем категорию (не кешируем, так как это одно поле)
+        try:
+            context['category'] = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            context['category'] = None
+
+        # Добавляем все категории для навигации
+        context['all_categories'] = Category.objects.all()
+
+        return context
